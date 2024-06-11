@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { HM } from "@/lib/fonts";
 import "./globals.css";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 export const metadata: Metadata = {
   title: "Goal Tracker App",
@@ -15,7 +17,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={HM.className}>{children}</body>
+      <body className={HM.className}>
+        {children}
+        <ToastContainer />
+      </body>
     </html>
   );
 }
