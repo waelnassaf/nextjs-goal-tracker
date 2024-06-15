@@ -1,4 +1,5 @@
 import { getFullUserData } from "@/server/actions";
+import { Category, Goal } from "@/types";
 
 const TestData = async () => {
   const userData = await getFullUserData("666980120b5c919fd83b6b1d");
@@ -17,14 +18,14 @@ const TestData = async () => {
       </p>
 
       <h2>Categories</h2>
-      {userData.categories.map((category) => (
-        <div key={category._id}>
+      {userData.categories.map((category: Category) => (
+        <div key={category._id.toString()}>
           <h3>{category.name}</h3>
           <p>Order: {category.order}</p>
           <h4>Goals</h4>
           <ul>
-            {category.goals.map((goal) => (
-              <li key={goal._id}>
+            {category.goals.map((goal: Goal) => (
+              <li key={goal._id.toString()}>
                 {goal.name} - {goal.complete ? "Complete" : "Incomplete"}
               </li>
             ))}
