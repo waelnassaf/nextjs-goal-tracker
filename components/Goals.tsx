@@ -10,6 +10,8 @@ import { addGoal, deleteGroup } from "@/server/actions"; // Assuming deleteGroup
 import AddNewGroup from "@/components/AddNewGroup";
 import { toast } from "react-toastify";
 
+export const revalidate = 0;
+
 const Goals = ({ user }: { user: UserResponse }) => {
   const [isFormVisible, setFormVisible] = useState(false);
   const [newGoal, setNewGoal] = useState("");

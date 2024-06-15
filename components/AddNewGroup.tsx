@@ -18,6 +18,7 @@ const AddNewGroup = ({ userId }: { userId: string }) => {
     }
     if (state.type === "success") {
       toast.success(state.message);
+      setFormVisible(false);
     }
   }, [state]);
 
