@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useFormState } from "react-dom";
 import { toast } from "react-toastify";
 import { StateResponse } from "@/types";
-import { useRouter } from "next/navigation";
 
 const AddNewGroup = ({ userId }: { userId: string }) => {
   const [formVisible, setFormVisible] = useState(false);
