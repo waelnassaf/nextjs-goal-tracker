@@ -1,7 +1,7 @@
-import { getUserCategories } from "@/server/actions";
+import { getFullUserData } from "@/server/actions";
 
 const TestData = async () => {
-  const userData = await getUserCategories("666980120b5c919fd83b6b1d");
+  const userData = await getFullUserData("666980120b5c919fd83b6b1d");
 
   if (!userData) {
     return <div>Loading...</div>;
