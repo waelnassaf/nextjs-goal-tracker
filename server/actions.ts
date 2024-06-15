@@ -8,6 +8,7 @@ import Category from "@/models/Category";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { StateResponse } from "@/types";
+import { cookies } from "next/headers";
 
 // export const getUserWithGoals = async (userId: string) => {
 //   try {
@@ -176,6 +177,9 @@ export const addGoal = async (categoryId: string, goalName: string) => {
 };
 
 export const getFullUserData = async (userId: string) => {
+  // disable cache for this server action
+  const _cookies = cookies();
+
   try {
     await dbConnect();
 
