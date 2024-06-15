@@ -6,9 +6,7 @@ import User from "@/models/User";
 import Goal from "@/models/Goal";
 import Category from "@/models/Category";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { StateResponse } from "@/types";
-import { cookies } from "next/headers";
 
 // export const getUserWithGoals = async (userId: string) => {
 //   try {
@@ -112,6 +110,7 @@ export const deleteGoal = async (goalId: string): Promise<void> => {
     throw new Error("Failed to delete goal");
   } finally {
     await session.endSession();
+    revalidatePath("/");
   }
 };
 
@@ -146,8 +145,19 @@ export const updateGoalsDate = async (
   }
 };
 
-export const addGoal = async (categoryId: string, goalName: string) => {
-  await dbConnect(); // Assuming dbConnect handles mongoose connection
+export const createGoal = async (
+  state: StateResponse,
+  formData: FormData,
+): Promise<StateResponse> => {
+  const categoryId = formData.get("categoryId") as string;
+  const goalName = formData.get("goalName") as string;
+  if (goalName.trim() === "") {
+    return { message: "Missing Field. Failed to Create Goal.", type: "error" };
+  }
+
+  await dbConnect();
+  const session = await mongoose.startSession();
+  session.startTransaction();
 
   try {
     // Validate category existence (optional, based on your app logic)
@@ -165,21 +175,27 @@ export const addGoal = async (categoryId: string, goalName: string) => {
 
     // Save the new Goal document
     await newGoal.save();
-    revalidatePath("/");
+    await session.commitTransaction();
 
     console.log("New goal added successfully:", newGoal);
 
-    return newGoal.toJSON(); // Returning as plain JSON object
+    return {
+      message: `${newGoal.name} was created successfully!`,
+      type: "success",
+    };
   } catch (error) {
-    console.error("Failed to add goal:", error);
-    throw new Error("Failed to add goal");
+    await session.abortTransaction();
+    return {
+      message: `Failed to create goal! Please try again`,
+      type: "error",
+    };
+  } finally {
+    await session.endSession();
+    revalidatePath("/");
   }
 };
 
 export const getFullUserData = async (userId: string) => {
-  // disable cache for this server action
-  const _cookies = cookies();
-
   try {
     await dbConnect();
 
@@ -304,9 +320,8 @@ export async function createGroup(
     };
   } finally {
     await session.endSession();
+    revalidatePath("/");
   }
-  revalidatePath("/");
-  redirect("/");
 }
 
 export const deleteGroup = async (groupId: string): Promise<void> => {
@@ -336,5 +351,6 @@ export const deleteGroup = async (groupId: string): Promise<void> => {
     throw new Error("Failed to delete group and associated goals");
   } finally {
     await session.endSession();
+    revalidatePath("/");
   }
 };

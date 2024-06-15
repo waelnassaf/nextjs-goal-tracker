@@ -3,18 +3,11 @@ import { deleteGoal } from "@/server/actions";
 import { Goal } from "@/types";
 import { toast } from "react-toastify";
 
-const DeleteIcon = ({
-  goal,
-  onDelete,
-}: {
-  goal: Goal;
-  onDelete: (goalId: string) => void;
-}) => {
+const DeleteIcon = ({ goal }: { goal: Goal }) => {
   const handleDeleteClick = async () => {
     if (window.confirm("Are you sure you want to delete this item?")) {
       try {
         await deleteGoal(goal._id.toString());
-        onDelete(goal._id.toString());
         toast.success("Goal deleted successfully!");
       } catch (error) {
         console.error("Failed to delete goal:", error);
