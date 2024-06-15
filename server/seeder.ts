@@ -18,22 +18,6 @@ export const seedDB = async () => {
     await Goal.deleteMany({}, { session });
     await User.deleteMany({}, { session });
 
-    // Create categories
-    const categories = [
-      { name: "Career" },
-      { name: "Health" },
-      { name: "Education" },
-      { name: "Finance" },
-      { name: "Relationship" },
-      { name: "Personal Development" },
-      { name: "Travel" },
-      { name: "Home Improvement" },
-      { name: "Creativity" },
-      { name: "Spiritual" },
-    ];
-
-    const savedCategories = await Category.insertMany(categories, { session });
-
     // Create users with goalsEndDate
     const users = [
       {
@@ -52,92 +36,116 @@ export const seedDB = async () => {
 
     const savedUsers = await User.insertMany(users, { session });
 
+    // Create categories
+    const categories = [
+      {
+        name: "My dad",
+        user: savedUsers[0]._id, // Associate category with user John Doe
+        order: 1, // Set the order
+      },
+      {
+        name: "Fitness",
+        user: savedUsers[0]._id, // Associate category with user John Doe
+        order: 2, // Set the order
+      },
+      {
+        name: "Travel",
+        user: savedUsers[0]._id, // Associate category with user John Doe
+        order: 3, // Set the order
+      },
+      {
+        name: "Family",
+        user: savedUsers[1]._id, // Associate category with user Jane Smith
+        order: 1, // Set the order
+      },
+      {
+        name: "Career",
+        user: savedUsers[1]._id, // Associate category with user Jane Smith
+        order: 2, // Set the order
+      },
+    ];
+
+    const savedCategories = await Category.insertMany(categories, {
+      session,
+    });
+
     // Create goals
     const goals = [
       {
-        name: "Get a promotion",
-        category: savedCategories[0]._id,
-        user: savedUsers[0]._id,
+        name: "Go to my dad",
+        category: savedCategories[0]._id, // Associate goal with category My dad
+        user: savedUsers[0]._id, // Associate goal with user John Doe
         complete: false,
       },
       {
-        name: "Switch to a new industry",
-        category: savedCategories[0]._id,
-        user: savedUsers[1]._id,
+        name: "Congratulate him",
+        category: savedCategories[0]._id, // Associate goal with category My dad
+        user: savedUsers[0]._id, // Associate goal with user John Doe
         complete: false,
       },
       {
         name: "Lose 10 pounds",
-        category: savedCategories[1]._id,
-        user: savedUsers[0]._id,
+        category: savedCategories[1]._id, // Associate goal with category Fitness
+        user: savedUsers[0]._id, // Associate goal with user John Doe
         complete: false,
       },
       {
         name: "Run a marathon",
-        category: savedCategories[1]._id,
-        user: savedUsers[1]._id,
+        category: savedCategories[1]._id, // Associate goal with category Fitness
+        user: savedUsers[0]._id, // Associate goal with user John Doe
         complete: false,
       },
       {
-        name: "Earn a degree",
-        category: savedCategories[2]._id,
-        user: savedUsers[0]._id,
+        name: "Visit Paris",
+        category: savedCategories[2]._id, // Associate goal with category Travel
+        user: savedUsers[0]._id, // Associate goal with user John Doe
         complete: false,
       },
       {
-        name: "Save $10,000",
-        category: savedCategories[3]._id,
-        user: savedUsers[1]._id,
+        name: "Visit London",
+        category: savedCategories[2]._id, // Associate goal with category Travel
+        user: savedUsers[0]._id, // Associate goal with user John Doe
         complete: false,
       },
       {
-        name: "Get engaged",
-        category: savedCategories[4]._id,
-        user: savedUsers[0]._id,
+        name: "Spend time with family",
+        category: savedCategories[3]._id, // Associate goal with category Family
+        user: savedUsers[1]._id, // Associate goal with user Jane Smith
         complete: false,
       },
       {
-        name: "Practice mindfulness daily",
-        category: savedCategories[5]._id,
-        user: savedUsers[1]._id,
+        name: "Attend family reunion",
+        category: savedCategories[3]._id, // Associate goal with category Family
+        user: savedUsers[1]._id, // Associate goal with user Jane Smith
         complete: false,
       },
       {
-        name: "Visit a new country",
-        category: savedCategories[6]._id,
-        user: savedUsers[0]._id,
+        name: "Get a promotion",
+        category: savedCategories[4]._id, // Associate goal with category Career
+        user: savedUsers[1]._id, // Associate goal with user Jane Smith
         complete: false,
       },
       {
-        name: "Renovate the kitchen",
-        category: savedCategories[7]._id,
-        user: savedUsers[1]._id,
-        complete: false,
-      },
-      {
-        name: "Write a book",
-        category: savedCategories[8]._id,
-        user: savedUsers[0]._id,
-        complete: false,
-      },
-      {
-        name: "Meditate daily",
-        category: savedCategories[9]._id,
-        user: savedUsers[1]._id,
+        name: "Enhance skills",
+        category: savedCategories[4]._id, // Associate goal with category Career
+        user: savedUsers[1]._id, // Associate goal with user Jane Smith
         complete: false,
       },
     ];
 
     const savedGoals = await Goal.insertMany(goals, { session });
 
-    // Update users with their goals
-    for (const user of savedUsers) {
-      const userGoals = savedGoals
-        .filter((goal) => goal.user.toString() === user._id.toString())
-        .map((goal) => goal._id);
+    // Update categories and users with their goals
+    for (const goal of savedGoals) {
+      await Category.findByIdAndUpdate(
+        goal.category,
+        { $push: { goals: goal._id } },
+        { session },
+      );
+
       await User.findByIdAndUpdate(
-        user._id,
-        { $set: { goals: userGoals } },
+        goal.user,
+        { $push: { goals: goal._id } },
         { session },
       );
     }

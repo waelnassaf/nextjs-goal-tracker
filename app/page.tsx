@@ -1,12 +1,15 @@
 import Hero from "@/components/Hero";
 import Goals from "@/components/Goals";
-import { getUserWithGoals } from "@/server/actions";
+import { getFullUserData } from "@/server/actions";
+// import TestData from "@/components/TestData";
+// import { seedDB } from "@/server/seeder";
 
 export default async function Home() {
-  const user = await getUserWithGoals("66682563f22e5ce53e0eecb9");
+  const user = await getFullUserData("666980120b5c919fd83b6b1d");
+  // const seed = seedDB();
   return (
     <main>
-      <Hero user={user} />
+      <Hero endDate={user.goalsEndDate} id={user._id.toString()} />
       <Goals user={user} />
     </main>
   );
