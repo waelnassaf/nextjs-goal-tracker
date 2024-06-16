@@ -2,7 +2,7 @@
 
 import { useFormStatus } from "react-dom";
 
-export function SubmitButton() {
+export function Button() {
   const { pending } = useFormStatus();
 
   return (
@@ -10,6 +10,7 @@ export function SubmitButton() {
       type="submit"
       className={"btn btn-success text-white"}
       disabled={pending}
+      aria-disabled={pending}
     >
       Add
     </button>
