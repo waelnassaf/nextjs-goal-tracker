@@ -1,5 +1,5 @@
 import { createGroup } from "@/server/actions";
-import { SubmitButton } from "@/components/Button";
+import { Button } from "@/components/Button";
 import { useEffect, useState } from "react";
 import { useFormState } from "react-dom";
 import { toast } from "react-toastify";
@@ -13,10 +13,10 @@ const AddNewGroup = ({ userId }: { userId: string }) => {
   });
 
   useEffect(() => {
-    if (state.type === "error") {
+    if (state?.type === "error") {
       toast.error(state.message);
     }
-    if (state.type === "success") {
+    if (state?.type === "success") {
       toast.success(state.message);
       setFormVisible(false);
     }
@@ -33,7 +33,7 @@ const AddNewGroup = ({ userId }: { userId: string }) => {
             name="groupText"
           />
           <input type="hidden" name="userId" value={userId} />
-          <SubmitButton />
+          <Button />
           <button
             className="btn btn-ghost"
             type="button"

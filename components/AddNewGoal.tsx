@@ -3,7 +3,7 @@ import { createGoal } from "@/server/actions";
 import { useEffect, useState } from "react";
 import { useFormState } from "react-dom";
 import { StateResponse } from "@/types";
-import { SubmitButton } from "@/components/Button";
+import { Button } from "@/components/Button";
 import { toast } from "react-toastify";
 
 const AddNewGoal = ({ cat }: { cat: string }) => {
@@ -41,7 +41,7 @@ const AddNewGoal = ({ cat }: { cat: string }) => {
           />
           <input type="hidden" name="categoryId" value={cat} />
 
-          <SubmitButton />
+          <Button />
           <button
             className="btn btn-ghost"
             type="button"
