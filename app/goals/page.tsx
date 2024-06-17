@@ -4,12 +4,15 @@ import { getFullUserData } from "@/server/actions";
 // import TestData from "@/components/TestData";
 // import { seedDB } from "@/server/seeder";
 import SignOutButton from "@/components/SignOutButton";
+import { auth } from "@/auth";
 
 export default async function Home() {
-  const user = await getFullUserData("666980120b5c919fd83b6b1d");
-  // const seed = seedDB();
+  const session = await auth();
+  const user = await getFullUserData(session?.user?.id);
+
   return (
     <main>
+      <div></div>
       <Hero endDate={user.goalsEndDate} id={user._id.toString()} />
       <Goals user={user} />
       <SignOutButton />

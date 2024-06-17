@@ -1,5 +1,5 @@
 // import AcmeLogo from '@/app/ui/acme-logo';
-import LoginForm from "@/components/LoginForm";
+import SignupForm from "@/components/SignupForm";
 import Link from "next/link";
 
 export default function SignupPage() {
@@ -10,7 +10,7 @@ export default function SignupPage() {
           <div className="text-white text-center bg-blue-500 rounded-lg py-5">
             Signup to use Goal Tracker
           </div>
-          <LoginForm />
+          <SignupForm />
         </div>
         <p className="text-gray-500">
           Have an account already?{" "}

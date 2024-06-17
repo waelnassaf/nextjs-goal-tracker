@@ -25,7 +25,7 @@ const AddNewGroup = ({ userId }: { userId: string }) => {
   return (
     <>
       {formVisible ? (
-        <form action={dispatch} className="flex gap-2 mt-2">
+        <form action={dispatch} className="flex gap-2 mt-5">
           <input
             type="text"
             placeholder="Type here"
@@ -46,7 +46,7 @@ const AddNewGroup = ({ userId }: { userId: string }) => {
         </form>
       ) : (
         <button
-          className="btn btn-ou tline"
+          className="btn btn-outline mt-5"
           type={"button"}
           onClick={() => {
             setFormVisible(true);

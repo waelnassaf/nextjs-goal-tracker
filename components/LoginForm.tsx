@@ -2,7 +2,6 @@
 
 import { BsArrowRight, BsKey, BsExclamationCircle } from "react-icons/bs";
 import { MdAlternateEmail } from "react-icons/md";
-import { Button } from "@/components/Button";
 import { authenticate } from "@/server/actions";
 import { useFormState, useFormStatus } from "react-dom";
 
@@ -54,7 +53,7 @@ const LoginForm = () => {
             </div>
           </div>
         </div>
-        <Button />
+        <LoginButton />
         <div
           className="flex h-8 items-end space-x-1"
           aria-live="polite"
@@ -72,15 +71,22 @@ const LoginForm = () => {
   );
 };
 
-// function LoginButton() {
-//   const { pending } = useFormStatus();
-//
-//   return (
-//     <>
-//       <SubmitButton />
-//       <BsArrowRight className="ml-auto h-5 w-5 text-gray-50" />
-//     </>
-//   );
-// }
+function LoginButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <>
+      <button
+        type="submit"
+        className={"btn btn-primary text-white mt-4"}
+        disabled={pending}
+        aria-disabled={pending}
+      >
+        Log in
+        <BsArrowRight className="ml-auto h-5 w-5 text-gray-50" />
+      </button>
+    </>
+  );
+}
 
 export default LoginForm;

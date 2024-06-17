@@ -7,13 +7,11 @@ import User from "@/models/User";
 import bcrypt from "bcrypt";
 import dbConnect from "@/server/dbConnect";
 
-async function getUser(email: string): Promise<UserType | undefined> {
+async function getUser(email: string): Promise<UserType | null | undefined> {
   try {
     await dbConnect();
-    const user = await User.findOne({ email: email });
-    console.log(user);
     // return JSON.parse(JSON.stringify(user[0]));
-    return user;
+    return await User.findOne({ email: email });
   } catch (error) {
     console.error("Failed to fetch user:", error);
     throw new Error("Failed to fetch user.");
@@ -34,7 +32,7 @@ export const { auth, signIn, signOut } = NextAuth({
           const user = await getUser(email);
           if (!user) return null;
           const passwordsMatch = await bcrypt.compare(password, user.password);
-
+          console.log("success found user: " + user);
           if (passwordsMatch) return user;
         }
         console.log("Invalid credentials");

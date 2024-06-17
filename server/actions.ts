@@ -9,52 +9,8 @@ import { revalidatePath } from "next/cache";
 import { StateResponse } from "@/types";
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
-
-// export const getUserWithGoals = async (userId: string) => {
-//   try {
-//     await dbConnect();
-//     const user = await User.findById(userId)
-//       .populate({
-//         path: "goals",
-//         populate: { path: "category", model: "Category" },
-//       })
-//       .lean();
-//     // Convert any Buffers or other non-serializable types here
-//     if (user) {
-//       const serializedUser = JSON.parse(
-//         JSON.stringify(user, (key, value) =>
-//           value instanceof Buffer ? value.toString("base64") : value,
-//         ),
-//       );
-//       console.log(serializedUser);
-//       return serializedUser;
-//     }
-//   } catch (error) {
-//     console.log("Failed to retrieve user with goals", error);
-//     throw new Error("Error fetching user with goals");
-//   }
-// };
-//
-// export const getUserGoalsWithCategories = async (userId: string) => {
-//   try {
-//     const userWithGoals = await User.findById(userId).populate({
-//       path: "goals",
-//       populate: {
-//         path: "category",
-//         model: "Category",
-//       },
-//     });
-//
-//     if (!userWithGoals) {
-//       throw new Error("User not found");
-//     }
-//
-//     return userWithGoals.goals;
-//   } catch (error) {
-//     console.error("Error fetching user goals with categories:", error);
-//     throw error;
-//   }
-// };
+import bcrypt from "bcrypt";
+import { redirect } from "next/navigation";
 
 export const toggleGoalComplete = async (goalId: string): Promise<void> => {
   await dbConnect();
@@ -197,7 +153,7 @@ export const createGoal = async (
   }
 };
 
-export const getFullUserData = async (userId: string) => {
+export const getFullUserData = async (userId: string | undefined) => {
   try {
     await dbConnect();
 
@@ -373,5 +329,71 @@ export async function authenticate(
       }
     }
     throw error;
+  }
+}
+
+export async function createUser(
+  state: StateResponse,
+  formData: FormData,
+): Promise<StateResponse> {
+  const name = formData.get("name") as string;
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
+  const confirmPassword = formData.get("confirmPassword") as string;
+  const goalsEndDate = formData.get("goalsEndDate") as string;
+
+  if (!name || !email || !password || !confirmPassword || !goalsEndDate) {
+    return {
+      message: "Missing required fields. Failed to create user.",
+      type: "error",
+    };
+  }
+
+  if (password !== confirmPassword) {
+    return {
+      message: "Passwords do not match. Failed to create user.",
+      type: "error",
+    };
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  await dbConnect();
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const existingUser = await User.findOne({ email }).session(session);
+    if (existingUser) {
+      return {
+        message: "User with this email already exists",
+        type: "error",
+      };
+    }
+
+    const user = new User({
+      name,
+      email,
+      password: hashedPassword,
+      goalsEndDate: goalsEndDate ? new Date(goalsEndDate) : undefined,
+    });
+
+    await user.save({ session });
+    await session.commitTransaction();
+    return {
+      message: `${user.name} was created successfully!`,
+      type: "success",
+    };
+  } catch (error) {
+    await session.abortTransaction();
+    return {
+      message: `Failed to create user! Please try again`,
+      type: "error",
+    };
+  } finally {
+    await session.endSession();
+    // You can add revalidation logic here if needed
+    // e.g., revalidatePath("/");
+    redirect("/login");
   }
 }
