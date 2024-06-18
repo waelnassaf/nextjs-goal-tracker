@@ -45,11 +45,17 @@ To run the project locally, follow these steps:
     ```
 
 3. **Set up environment variables**:
-   Find `.env` file in the root of your project and add the following variable:
+   Find `.env` file in the root of your project and add the following variables:
     ```env
     DATABASE_URL=your_atlas_mongodb_uri
+   AUTH_SECRET=secret_key_for_your_application
+   NEXT_PUBLIC_RECAPTCHA_SITE_KEY=public_google_recapatcha_site_key
+    RECAPTCHA_SECRET_KEY=secret_google_recapatcha_key
     ```
-
+   Obtain AUTH_SECRET By running the following command in your terminal
+    ```sh
+     openssl rand -base64 32
+    ```
 4. **Run the development server**:
     ```sh
     npm run dev
