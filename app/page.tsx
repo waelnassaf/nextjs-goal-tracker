@@ -69,7 +69,7 @@ export default async function Home() {
         </ul>
       </section>
 
-      <section className="flex justify-around my-6">
+      <section className="flex-col gap-4 md:flex-row flex justify-around my-6">
         <p>
           Made with ❤️ by
           <Link href="https://x.com/waelnassaf/" className="text-blue-500">
