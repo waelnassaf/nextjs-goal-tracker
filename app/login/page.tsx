@@ -1,4 +1,3 @@
-// import AcmeLogo from '@/app/ui/acme-logo';
 import LoginForm from "@/components/LoginForm";
 
 export default function LoginPage() {

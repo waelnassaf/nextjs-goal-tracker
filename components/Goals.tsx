@@ -1,11 +1,10 @@
 "use client";
 
-import React from "react";
 import { RiDraggable } from "react-icons/ri";
 import CheckBox from "@/components/CheckBox";
 import DeleteIcon from "@/components/DeleteIcon";
 import { UserResponse, Goal, Category } from "@/types";
-import { deleteGroup } from "@/server/actions"; // Assuming deleteGroup action is imported
+import { deleteGroup } from "@/server/actions";
 import AddNewGroup from "@/components/AddNewGroup";
 import { toast } from "react-toastify";
 import AddNewGoal from "@/components/AddNewGoal";

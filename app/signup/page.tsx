@@ -12,7 +12,7 @@ export default function SignupPage() {
           </div>
           <SignupForm />
         </div>
-        <p className="text-gray-500">
+        <p className="text-gray-500 pb-5">
           Have an account already?{" "}
           <Link href="/login" className="text-blue-500">
             Login
